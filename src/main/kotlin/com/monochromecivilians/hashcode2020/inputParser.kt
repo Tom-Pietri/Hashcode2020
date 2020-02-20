@@ -29,7 +29,7 @@ fun parseInput(input: List<String>): ParsedInput {
         books.forEach { booksMap.put(it.id, it) }
 
         Library(index, stringedLibrary[0].toInt(), stringedLibrary[1].toInt(), stringedLibrary[2].toInt(), booksMap)
-    }.toMutableList()
+    }.sortedBy { it.signUpTime }.toMutableList()
 
     return ParsedInput(problemDescription = problemDescription,
             libraries = libaries)

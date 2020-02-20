@@ -8,8 +8,7 @@ fun computeSolution(parsedInput: ParsedInput): Solution {
 
     while (daysRemaining > 0) {
         if(libararyBeingSignedUp == null) {
-            val firstLibrary = parsedInput.libraries.removeAt(0)
-            libararyBeingSignedUp = LibararyBeingSignedUp(firstLibrary.signUpTime, firstLibrary)
+            libararyBeingSignedUp = getNextLibrary(parsedInput, libararyBeingSignedUp)
         } else {
             libararyBeingSignedUp.daysRemaining--
             if(libararyBeingSignedUp.daysRemaining == 0) {
@@ -36,6 +35,13 @@ fun computeSolution(parsedInput: ParsedInput): Solution {
     }
 
     return Solution(librariesBooksSent.size, librariesBooksSent.values)
+}
+
+private fun getNextLibrary(parsedInput: ParsedInput, libararyBeingSignedUp: LibararyBeingSignedUp?): LibararyBeingSignedUp? {
+    var libararyBeingSignedUp1 = libararyBeingSignedUp
+    val firstLibrary = parsedInput.libraries.removeAt(0)
+    libararyBeingSignedUp1 = LibararyBeingSignedUp(firstLibrary.signUpTime, firstLibrary)
+    return libararyBeingSignedUp1
 }
 
 data class LibararyBeingSignedUp(var daysRemaining: Int, val library: Library)
