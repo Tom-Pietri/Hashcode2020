@@ -8,7 +8,7 @@ fun computeSolution(parsedInput: ParsedInput): Solution {
 
     while (daysRemaining > 0) {
         if(libararyBeingSignedUp == null) {
-            libararyBeingSignedUp = getNextLibrary(parsedInput, libararyBeingSignedUp)
+            libararyBeingSignedUp = getNextLibrary(parsedInput, libararyBeingSignedUp, daysRemaining)
         } else {
             libararyBeingSignedUp.daysRemaining--
             if(libararyBeingSignedUp.daysRemaining == 0) {
@@ -25,6 +25,9 @@ fun computeSolution(parsedInput: ParsedInput): Solution {
                 if(library.books.isNotEmpty()) {
                     val bookWithMaxScore = library.books.maxBy { parsedInput.problemDescription.bookScore.get(it.key)!! }!!
                     library.books.remove(bookWithMaxScore.key)
+                    parsedInput.libraries.forEach { lib ->
+                        lib.books.remove(bookWithMaxScore.key)
+                    }
                     libraryBookSent.booksSent.add(bookWithMaxScore.value)
                 }
             }
@@ -37,15 +40,15 @@ fun computeSolution(parsedInput: ParsedInput): Solution {
     return Solution(librariesBooksSent.size, librariesBooksSent.values)
 }
 
-private fun getNextLibrary(parsedInput: ParsedInput, libararyBeingSignedUp: LibararyBeingSignedUp?): LibararyBeingSignedUp? {
+private fun getNextLibrary(parsedInput: ParsedInput, libararyBeingSignedUp: LibararyBeingSignedUp?, remainingDays: Int): LibararyBeingSignedUp? {
     var libararyBeingSignedUp1 = libararyBeingSignedUp
-    val firstLibrary = parsedInput.libraries.removeAt(0)
+    var maxLibrary = parsedInput.libraries.maxBy { it.libaryScore(remainingDays) }!!
+    val firstLibrary = parsedInput.libraries.removeAt(parsedInput.libraries.find { it.id == maxLibrary.id }!!.id)
     libararyBeingSignedUp1 = LibararyBeingSignedUp(firstLibrary.signUpTime, firstLibrary)
     return libararyBeingSignedUp1
 }
 
 data class LibararyBeingSignedUp(var daysRemaining: Int, val library: Library)
-data class BookBeingSignedUp(var daysRemaining: Int, val book: Book)
 
 data class Solution(val nbLibrariesSigned: Int, val libraryBooksSent: MutableCollection<LibraryBooksSent>) {
     fun computeScore() = 1
