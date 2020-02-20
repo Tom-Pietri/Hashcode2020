@@ -29,7 +29,7 @@ fun parseInput(input: List<String>): ParsedInput {
         books.forEach { booksMap.put(it.id, it) }
 
         Library(index, stringedLibrary[0].toInt(), stringedLibrary[1].toInt(), stringedLibrary[2].toInt(), booksMap)
-    }.sortedByDescending { it.libaryScore }.toMutableList()
+    }.toMutableList()
 
     return ParsedInput(problemDescription = problemDescription,
             libraries = libaries)
@@ -41,15 +41,16 @@ data class ProblemDescription(val bookNb: Int, val nbLibrary: Int, val daysForSc
 
 data class Library(val id: Int, val nbBooks: Int, val signUpTime: Int, val nbBooksShippedByDay: Int, val books: MutableMap<Int, Book>) {
 
-    val libaryScore = (books.values.sumBy { it.bookScore } * nbBooksShippedByDay) / signUpTime
     fun libaryScore(remainingDays: Int): Int {
-        var daysToSendRemaingBooks = nbBooks / nbBooksShippedByDay
-        val totalBookScore = if(daysToSendRemaingBooks < remainingDays) {
-            books.values.sumBy { it.bookScore }
-        } else {
-            books.values.take(remainingDays * nbBooksShippedByDay).sumBy { it.bookScore }
+        val daysToSendRemaingBooks = nbBooks / nbBooksShippedByDay
+        val remain = (remainingDays - signUpTime)
+        if (remain < 0) {
+            return 0
         }
-        return (totalBookScore * nbBooksShippedByDay) / signUpTime
+        if (daysToSendRemaingBooks < remain) {
+            return books.values.sumBy { it.bookScore }
+        }
+        return books.values.sortedBy { it.bookScore }.take(remainingDays * remain).sumBy { it.bookScore }
     }
 }
 

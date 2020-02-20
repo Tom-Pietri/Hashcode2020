@@ -46,8 +46,8 @@ private fun getNextLibrary(parsedInput: ParsedInput, remainingDays: Int): Libara
         return LibararyBeingSignedUp(first.signUpTime, first)
     }
     var maxLibrary = parsedInput.libraries.maxBy { it.libaryScore(remainingDays) }!!
-    val first = parsedInput.libraries.removeAt(parsedInput.libraries.find { it.id == maxLibrary.id }!!.id)
-    return LibararyBeingSignedUp(first.signUpTime, first)
+    parsedInput.libraries.remove(parsedInput.libraries.find { it.id == maxLibrary.id }!!)
+    return LibararyBeingSignedUp(maxLibrary.signUpTime, maxLibrary)
 }
 
 data class LibararyBeingSignedUp(var daysRemaining: Int, val library: Library)
