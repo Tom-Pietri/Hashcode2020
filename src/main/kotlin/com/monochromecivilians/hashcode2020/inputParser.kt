@@ -47,10 +47,8 @@ data class Library(val id: Int, val nbBooks: Int, val signUpTime: Int, val nbBoo
         val totalBookScore = if(daysToSendRemaingBooks < remainingDays) {
             books.values.sumBy { it.bookScore }
         } else {
-
-            books.values.sumBy { it.bookScore }
+            books.values.take(remainingDays * nbBooksShippedByDay).sumBy { it.bookScore }
         }
-
         return (totalBookScore * nbBooksShippedByDay) / signUpTime
     }
 }

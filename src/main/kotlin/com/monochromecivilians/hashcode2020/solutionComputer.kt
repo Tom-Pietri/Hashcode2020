@@ -8,7 +8,7 @@ fun computeSolution(parsedInput: ParsedInput): Solution {
 
     while (daysRemaining > 0) {
         if(libararyBeingSignedUp == null) {
-            libararyBeingSignedUp = getNextLibrary(parsedInput, libararyBeingSignedUp, daysRemaining)
+            libararyBeingSignedUp = getNextLibrary(parsedInput, daysRemaining)
         } else {
             libararyBeingSignedUp.daysRemaining--
             if(libararyBeingSignedUp.daysRemaining == 0) {
@@ -40,12 +40,14 @@ fun computeSolution(parsedInput: ParsedInput): Solution {
     return Solution(librariesBooksSent.size, librariesBooksSent.values)
 }
 
-private fun getNextLibrary(parsedInput: ParsedInput, libararyBeingSignedUp: LibararyBeingSignedUp?, remainingDays: Int): LibararyBeingSignedUp? {
-    var libararyBeingSignedUp1 = libararyBeingSignedUp
+private fun getNextLibrary(parsedInput: ParsedInput, remainingDays: Int): LibararyBeingSignedUp? {
+    if (parsedInput.libraries.size == 1) {
+        val first = parsedInput.libraries.first()
+        return LibararyBeingSignedUp(first.signUpTime, first)
+    }
     var maxLibrary = parsedInput.libraries.maxBy { it.libaryScore(remainingDays) }!!
-    val firstLibrary = parsedInput.libraries.removeAt(parsedInput.libraries.find { it.id == maxLibrary.id }!!.id)
-    libararyBeingSignedUp1 = LibararyBeingSignedUp(firstLibrary.signUpTime, firstLibrary)
-    return libararyBeingSignedUp1
+    val first = parsedInput.libraries.removeAt(parsedInput.libraries.find { it.id == maxLibrary.id }!!.id)
+    return LibararyBeingSignedUp(first.signUpTime, first)
 }
 
 data class LibararyBeingSignedUp(var daysRemaining: Int, val library: Library)
